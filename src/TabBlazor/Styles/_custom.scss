@@ -6,13 +6,44 @@
     text-decoration: underline;
 }
 
+//Treeview
+.tree, .tree ul {
+    margin: 0;
+    padding: 0;
+    list-style: none
+}
+
+.tree-node-selected {
+    border-color: #206bc4;
+    border-style: solid;
+    border-width: thin;
+}
+
+//Override switch icon
+
+.switch-icon {
+    width: unset;
+    height: unset;
+
+    svg {
+        width: unset;
+        height: unset;
+    }
+}
+
+
+.switch-icon svg {
+    width: unset;
+    height: unset
+}
+
 
 /**
 Dimmer
 */
 .dimmer {
     position: relative;
-    min-height: 2.5rem;
+    // min-height: 2.5rem;
 }
 
 .dimmer .loader {

@@ -2,12 +2,32 @@
   cursor: pointer;
   text-decoration: underline; }
 
+.tree, .tree ul {
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+
+.tree-node-selected {
+  border-color: #206bc4;
+  border-style: solid;
+  border-width: thin; }
+
+.switch-icon {
+  width: unset;
+  height: unset; }
+  .switch-icon svg {
+    width: unset;
+    height: unset; }
+
+.switch-icon svg {
+  width: unset;
+  height: unset; }
+
 /**
 Dimmer
 */
 .dimmer {
-  position: relative;
-  min-height: 2.5rem; }
+  position: relative; }
 
 .dimmer .loader {
   display: none;

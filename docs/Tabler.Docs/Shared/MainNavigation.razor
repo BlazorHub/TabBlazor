@@ -1,6 +1,9 @@
-﻿<Navbar>
+﻿<Navbar Darkmode>
+
+
     <a href="https://github.com/joadan/Blazor-Tabler" class="navbar-brand navbar-brand-autodark">
-        <img src="_content/Tabler.Docs/img/logo-white.svg" alt="Tabler" class="navbar-brand-image">
+        <img src="_content/Tabler.Docs/img/TabBlazorLogoWhite.png" alt="Tabler" class="navbar-brand-image me-2">
+        <h2 class="mt-2">TabBlazor</h2>
     </a>
 
     <NavbarMenu>
@@ -9,7 +12,7 @@
                 <Icon class="icon" Elements="@DemoIcons.Dashboard" />
             </MenuItemIcon>
         </NavbarMenuItem>
-       
+
         <NavbarMenuItem Text="Snippets">
             <MenuItemIcon>
                 <Icon class="icon" Elements="@DemoIcons.Code" />
@@ -19,6 +22,17 @@
                 <NavbarMenuItem Text="Profile" Href="snippets/profiles" />
             </SubMenu>
         </NavbarMenuItem>
+
+        <NavbarMenuItem Text="Utilites">
+            <MenuItemIcon>
+                <Icon class="icon" Elements="@DemoIcons.Exposure" />
+            </MenuItemIcon>
+            <SubMenu>
+                <NavbarMenuItem Text="Colors" Href="docs/utilities/colors" />
+            </SubMenu>
+        </NavbarMenuItem>
+
+
 
 
         <NavbarMenuItem Text="Components" Expanded>
@@ -34,6 +48,7 @@
 
                 </NavbarMenuItem>
 
+                <NavbarMenuItem Text="TreeView" Href="docs/treeviews" />
                 <NavbarMenuItem Text="Dimmer" Href="docs/dimmers" />
                 <NavbarMenuItem Text="Table" Href="docs/tables" />
                 <NavbarMenuItem Text="Button" Href="docs/buttons" />
@@ -51,6 +66,9 @@
                 <NavbarMenuItem Text="Progress" Href="docs/progress" />
                 <NavbarMenuItem Text="Navbar" Href="docs/navbars" />
                 <NavbarMenuItem Text="Modal" Href="docs/modals" />
+                <NavbarMenuItem Text="Switch Content" Href="docs/switch-content" />
+                
+
             </SubMenu>
         </NavbarMenuItem>
 

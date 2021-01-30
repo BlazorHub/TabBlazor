@@ -1,6 +1,6 @@
 ﻿<div class="mb-3">
     <label class="form-label">Name</label>
-    <input type="text" class="form-control" name="example-text-input" placeholder="Your report name">
+    <input type="text" class="form-control" name="example-text-input" @bind-value="@ReportName" placeholder="Your report name">
 </div>
 <label class="form-label">Report type</label>
 <div class="form-selectgroup-boxes row mb-3">
@@ -8,7 +8,7 @@
         <label class="form-selectgroup-item">
             <input type="radio" name="report-type" value="1" class="form-selectgroup-input" checked="">
             <span class="form-selectgroup-label d-flex align-items-center p-3">
-                <span class="mr-3">
+                <span class="me-3">
                     <span class="form-selectgroup-check"></span>
                 </span>
                 <span class="form-selectgroup-label-content">
@@ -22,7 +22,7 @@
         <label class="form-selectgroup-item">
             <input type="radio" name="report-type" value="1" class="form-selectgroup-input">
             <span class="form-selectgroup-label d-flex align-items-center p-3">
-                <span class="mr-3">
+                <span class="me-3">
                     <span class="form-selectgroup-check"></span>
                 </span>
                 <span class="form-selectgroup-label-content">
@@ -41,7 +41,7 @@
                 <span class="input-group-text">
                     https://tabler.io/reports/
                 </span>
-                <input type="text" class="form-control pl-0" value="report-01">
+                <input type="text" class="form-control ps-0" value="report-01">
             </div>
         </div>
     </div>
@@ -81,7 +81,7 @@
     <a @onclick="Cancel" class="btn btn-link link-secondary" data-dismiss="modal">
         Cancel
     </a>
-    <a @onclick="CreateReport" class="btn btn-primary ml-auto" data-dismiss="modal">
+    <a @onclick="CreateReport" class="btn btn-primary ms-auto" data-dismiss="modal">
         <Icon class="icon" Elements="@DemoIcons.Plus" />
         Create new report
     </a>
@@ -89,6 +89,8 @@
 
 @code {
     @inject IModalService ModalService
+
+    [Parameter] public string ReportName { get; set; }
 
     private void CreateReport()
     {

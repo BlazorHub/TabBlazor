@@ -17,9 +17,9 @@
     <link href="_content/Blazored.Typeahead/blazored-typeahead.css" rel="stylesheet" />
     <script src="_content/Blazored.Typeahead/blazored-typeahead.js"></script>
 
-    <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-alpha.14/dist/css/tabler.min.css">
-    <link rel="stylesheet" href="_content/TabBlazor/css/tabler-blazor.min.css" />
-    <script src="_content/TabBlazor/js/tabler-blazor.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-alpha.22/dist/css/tabler.min.css">
+    <link rel="stylesheet" href="_content/TabBlazor/css/tabblazor.min.css" />
+    <script src="_content/TabBlazor/js/tabblazor.js"></script>
 
 
     <link href="_content/Tabler.Docs/css/tabler-docs.css" rel="stylesheet" />
@@ -30,7 +30,19 @@
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="spash">
+           
+                <div class="ratio ratio-21x9" style="width:50%;height:50%">
+                    <div class="skeleton-image"></div>
+                </div>
+              
+                    <div class="skeleton-heading"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line"></div>
+                </div>
+                  
+    </div>
 
     <script src="decode.js"></script>
     <script src="_framework/blazor.webassembly.js" autostart="false"></script>
@@ -56,7 +68,7 @@
         });
     </script>
 
- <!-- Start Single Page Apps for GitHub Pages -->
+    <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
         // Single Page Apps for GitHub Pages
         // https://github.com/rafrex/spa-github-pages
@@ -87,7 +99,7 @@
         }(window.location))
     </script>
     <!-- End Single Page Apps for GitHub Pages -->
-    
+
 </body>
 
 </html>

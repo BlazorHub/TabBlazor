@@ -18,7 +18,7 @@
         return alert(message);
     },
 
-      windowOpen: (url, name, features, replace) => {
+    windowOpen: (url, name, features, replace) => {
         window.open(url, name, features, replace);
         return "";
     },
@@ -32,14 +32,14 @@
         element[property] = value;
         return "";
     },
- 
+
 
     clickOutsideHandler: {
         addEvent: function (elementId, dotnetHelper) {
             window.addEventListener("click", (e) => {
                 var element = document.getElementById(elementId);
                 if (e != null && element != null) {
-                    if (e.target !== element && !element.contains(e.target)) {
+                    if (e.target !== element && (!element.contains(e.target))) {
                         dotnetHelper.invokeMethodAsync("InvokeClickOutside");
                     }
                 }

@@ -19,10 +19,10 @@ namespace TabBlazor
     public partial class Card : TablerBaseComponent
     {
         [Parameter] public CardSize Size { get; set; } = CardSize.Default;
-        [Parameter] public bool IsStacker { get; set; }
+        [Parameter] public bool Stacked { get; set; }
         [Parameter] public TablerColor StatusTop { get; set; } = TablerColor.Default;
-        [Parameter] public TablerColor StatusLeft { get; set; } = TablerColor.Default;
-        [Parameter] public TablerColor StatusBottom { get; set; } = TablerColor.Default;
+        [Parameter] public TablerColor StatusStart { get; set; } = TablerColor.Default;
+      
         [Parameter] public string LinkTo { get; set; }
 
         protected string HtmlTag => string.IsNullOrWhiteSpace(LinkTo)
@@ -35,7 +35,7 @@ namespace TabBlazor
 
         protected override string ClassNames => ClassBuilder
             .Add("card")
-            .AddIf("card-stacked", IsStacker)
+            .AddIf("card-stacked", Stacked)
             .Add(BackgroundColor.GetColorClass("bg"))
             .Add(TextColor.GetColorClass("text"))
             .AddCompare("card-sm", Size, CardSize.Small)

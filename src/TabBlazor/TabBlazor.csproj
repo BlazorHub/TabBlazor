@@ -12,6 +12,8 @@
     <Version>0.0.1-alpha</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
+    <PackageIcon>TabBlazorLogo.png</PackageIcon>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,16 +21,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Styles\tabler-blazor.scss" />
+    <None Remove="Styles\tabblazor.scss" />
     <None Remove="Styles\_custom.scss" />
+    <None Include="TabBlazorLogo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\css\tabler-blazor.css" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Styles\tabler-blazor.scss" />
+    <Content Include="Styles\tabblazor.scss" />
     <Content Include="Styles\_custom.scss" />
   </ItemGroup>
 
@@ -44,11 +46,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\" />
+    <None Include="compilerconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="compilerconfig.json" />
+    <None Update="TabBlazorLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
  

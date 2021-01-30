@@ -1,0 +1,54 @@
+﻿<Row>
+    <RowCol Sm="12" Md="6">
+        <label class="form-label">Size</label>
+        <ItemSelect Items="EnumInfo.GetList<ModalSize>()" @bind-SelectedValue="@modalOptions.Size" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+    </RowCol>
+
+    <RowCol Sm="12" Md="6">
+        <label class="form-label">Fullscreen</label>
+        <ItemSelect Items="EnumInfo.GetList<ModalFullscreen>()" @bind-SelectedValue="@modalOptions.Fullscreen" TextExpression="e=> e.ToString()" ValueExpression="e=> e" />
+    </RowCol>
+
+    <Row class="mt-2">
+        <RowCol Sm="12" Md="4">
+            <Checkbox @bind-Value="@modalOptions.CloseOnClickOutside" Label="Close on click outside" />
+        </RowCol>
+        <RowCol Sm="12" Md="4">
+            <Checkbox @bind-Value="@modalOptions.CloseOnEsc" Label="Close on Esc" />
+        </RowCol>
+        <RowCol Sm="12" Md="4">
+            <Checkbox @bind-Value="@modalOptions.ShowHeader" Label="Show Header" />
+        </RowCol>
+    </Row>
+</Row>
+<Row class="mt-2">
+    <RowCol>
+        <Button @onclick="ShowModal" BackgroundColor="TablerColor.Primary">Show Modal</Button>
+    </RowCol>
+</Row>
+
+<div>@message</div>
+
+
+@code {
+    @inject IModalService ModalService
+    private string message;
+    private ModalOptions modalOptions = new ModalOptions { CloseOnClickOutside = true };
+
+    protected async Task ShowModal()
+    {
+        message = string.Empty;
+        var result = await ModalService.Show("This is a Title", typeof(TestModalContent), null, modalOptions);
+
+        if (result.Cancelled)
+        {
+            message = "Modal was cancelled!";
+        }
+        else
+        {
+            message = "Modal as ok!";
+        }
+
+    }
+
+}

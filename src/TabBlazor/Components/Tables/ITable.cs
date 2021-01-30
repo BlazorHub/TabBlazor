@@ -11,11 +11,14 @@ namespace TabBlazor.Components.Tables
         int PageSize { get; }
         bool ShowFooter { get; set; }
         bool ShowSearch { get; set; }
+        bool MultiSelect { get; set; }
         int PageNumber { get; }
         int TotalCount { get; }
         int VisibleColumnCount { get; }
-        TableItem SelectedItem { get; }
+        List<TableItem> SelectedItems { get; set; }
+        IList<TableItem> Items { get; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
+        bool ShowCheckboxes { get; set; }
         bool HasRowActions { get; }
          Task FirstPage();
         Task SetPage(int pageNumber);
@@ -29,6 +32,8 @@ namespace TabBlazor.Components.Tables
         void RemoveColumn(IColumn<TableItem> column);
         Task RefreshItems(MouseEventArgs args);
         Task OnSearchChanged(ChangeEventArgs args);
+        Task SelectAll();
+        Task UnSelectAll();
         Task Update();
         void SetPageSize(int pageSize);
         string SearchText { get; set; }
@@ -53,6 +58,7 @@ namespace TabBlazor.Components.Tables
         List<IColumn<TableItem>> Columns { get; }
         List<IColumn<TableItem>> VisibleColumns { get; }
         bool IsAddInProgress { get; }
+        bool ShowCheckboxes { get; }
         IList<TableItem> Items { get; }
         TableItem CurrentEditItem { get; }
         Task CloseEdit();
@@ -64,12 +70,15 @@ namespace TabBlazor.Components.Tables
         List<IColumn<TableItem>> VisibleColumns { get; }
         IList<TableItem> Items { get; }
         TableItem SelectedItem { get; }
+        List<TableItem> SelectedItems { get; }
+        bool ShowCheckboxes { get;  }
         RenderFragment<TableItem> DetailsTemplate { get; }
         RenderFragment<TableItem> RowActionTemplate { get; set; }
         bool AllowEdit { get; }
         bool AllowDelete { get; }
         bool HasRowActions { get; }
         EventCallback<TableItem> OnItemSelected { get; }
+        EventCallback<List<TableItem>> SelectedItemsChanged { get; }
         Task OnDeleteItem(TableItem item);
         void EditItem(TableItem item);
         Task SetSelectedItem(TableItem item);

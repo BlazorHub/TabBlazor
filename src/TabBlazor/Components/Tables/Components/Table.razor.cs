@@ -10,19 +10,14 @@ using TabBlazor.Components.Tables;
 
 namespace TabBlazor
 {
-    public class TableBase<Item> : ComponentBase,  ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState // ITableRowActions<Item>
+    public class TableBase<Item> : ComponentBase, ITable<Item>, IInlineEditTable<Item>, IDetailsTable<Item>, ITableRow<Item>, ITableState // ITableRowActions<Item>
     {
-       // [Inject] protected AppService AppService { get; set; }
-
         [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> UnknownParameters { get; set; }
-        //[Parameter] public List<MenuDropdownItem<Item>> RowActions { get; set; } = new List<MenuDropdownItem<Item>>();
-        //[Parameter] public List<MenuDropdownItem<object>> HeaderActions { get; set; } = new List<MenuDropdownItem<object>>();
         [Parameter] public bool ShowHeader { get; set; } = true;
         [Parameter] public bool ShowFooter { get; set; } = true;
         [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool Selectable { get; set; }
         [Parameter] public bool ShowNoItemsLabel { get; set; } = true;
-        //[Parameter] public WebColor? StatusColor { get; set; }
         [Parameter] public string TableClass { get; set; } = "table card-table table-striped table-vcenter datatable dataTable no-footer";
         [Parameter] public string ValidationRuleSet { get; set; } = "default";
         [Parameter] public int PageSize { get; set; } = 20;
@@ -32,30 +27,36 @@ namespace TabBlazor
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public RenderFragment<Item> DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<Item> RowActionTemplate { get; set; }
+        
+        [Parameter] public List<Item> SelectedItems { get; set; }
+        [Parameter] public EventCallback<List<Item>> SelectedItemsChanged { get; set; }
+        [Parameter] public bool MultiSelect { get; set; }
+
 
         [Parameter] public Func<Task<IList<Item>>> OnRefresh { get; set; }
         [Parameter] public EventCallback<Item> OnItemEdited { get; set; }
         [Parameter] public EventCallback<Item> OnItemAdded { get; set; }
         [Parameter] public EventCallback<Item> OnItemDeleted { get; set; }
         [Parameter] public EventCallback<Item> OnItemSelected { get; set; }
-
         [Parameter] public Func<Item, bool> AllowDeleteExpression { get; set; }
         [Parameter] public int TotalCount { get; set; }
+        [Parameter] public bool ShowCheckboxes { get; set; }
+        [Parameter] public Func<Item> AddItemFactory { get; set; }
+
 
         public bool HasRowActions => RowActionTemplate != null || AllowDelete || AllowEdit;
         public bool ShowSearch { get; set; } = true;
+
         protected IEnumerable<TableResult<object, Item>> TempItems { get; set; } = Enumerable.Empty<TableResult<object, Item>>();
         public List<IColumn<Item>> Columns { get; } = new List<IColumn<Item>>();
         public List<IColumn<Item>> VisibleColumns => Columns.Where(x => x.Visible).ToList();
-        //public List<MenuDropdownItem<Item>> AllRowActions { get; set; } = new List<MenuDropdownItem<Item>>();
         public int PageNumber { get; set; }
-        public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0);
+        public int VisibleColumnCount => Columns.Count(x => x.Visible) + (HasRowActions ? 1 : 0) + (ShowCheckboxes ? 1 : 0);
         public string SearchText { get; set; }
         public bool ResetPage { get; set; }
         public bool IsAddInProgress { get; set; }
         public bool ReloadingItems { get; set; }
         public Item CurrentEditItem { get; private set; }
-        public Item SelectedItem { get; private set; }
         protected IDictionary<string, object> Attributes { get; set; }
         public bool ChangedItem { get; set; }
         public bool AllowAdd => OnItemAdded.HasDelegate;
@@ -63,7 +64,7 @@ namespace TabBlazor
         public bool AllowEdit => OnItemEdited.HasDelegate;
         public bool HasGrouping => Columns.Any(x => x.GroupBy);
         public TheGridDataFactory<Item> DataFactory { get; set; }
-
+        public Item SelectedItem { get; set; }
         protected async override Task OnParametersSetAsync()
         {
             await Update();
@@ -84,7 +85,6 @@ namespace TabBlazor
             }
 
             Attributes = baseAttributes;
-            //AllRowActions = GetRowActions();
             await Update();
         }
 
@@ -148,9 +148,11 @@ namespace TabBlazor
             await CloseEdit();
         }
 
-        public bool IsSame(Item first, Item second)
+      
+        public bool IsSelected(Item item)
         {
-            return EqualityComparer<Item>.Default.Equals(first, second);
+            if (SelectedItems == null) { return false; }
+            return SelectedItems.Contains(item);
         }
 
         public bool IsEditingItem(Item item)
@@ -160,37 +162,66 @@ namespace TabBlazor
 
         protected bool ShowDetailsRow(Item item)
         {
-            return DetailsTemplate != null && SelectedItem != null && IsSame(item, SelectedItem);
+            return DetailsTemplate != null && IsSelected(item);
         }
 
         public async Task SetSelectedItem(Item item)
         {
-            await OnItemSelected.InvokeAsync(item);
-            if (SelectedItem != null && !IsSame(item, SelectedItem))
+            if (SelectedItems == null) { SelectedItems = new List<Item>(); }
+
+            if (IsSelected(item))
             {
-                ChangedItem = true;
-            }
-            else if (SelectedItem != null && IsSame(item, SelectedItem))
-            {
+                SelectedItems.Remove(item);
                 SelectedItem = default;
-                await Update();
-                return;
+            }
+            else
+            {
+                if (!MultiSelect)
+                {
+                    SelectedItems.Clear();
+                }
+
+                SelectedItems.Add(item);
             }
 
             SelectedItem = item;
+            await UpdateSelected();
+        }
+
+
+        public async Task UnSelectAll()
+        {
+            SelectedItems.Clear();
+            SelectedItem = default;
+            await UpdateSelected();
+        }
+
+        public async Task SelectAll()
+        {
+            if (Items == null || !Items.Any()) return;
+
+            SelectedItems = Items.ToList();
+            SelectedItem = SelectedItems.First();
+            await UpdateSelected();
+        }
+
+        private async Task UpdateSelected()
+        {
+            await OnItemSelected.InvokeAsync(SelectedItem);
+            await SelectedItemsChanged.InvokeAsync(SelectedItems);
             await Update();
         }
 
         public async Task ClearSelectedItem()
         {
-            if (ChangedItem)
-            {
-                ChangedItem = false;
-                return;
-            }
+            //if (ChangedItem)
+            //{
+            //    ChangedItem = false;
+            //    return;
+            //}
 
-            SelectedItem = default;
-            await Update();
+            //SelectedItem = default;
+            //await Update();
         }
 
         public async Task CloseEdit()
@@ -205,7 +236,6 @@ namespace TabBlazor
             if (CurrentEditItem == null || !TempItems.Any())
             {
                 TempItems = DataFactory.GetData(Items, ResetPage);
-               // AllRowActions = GetRowActions();
                 await Refresh();
             }
         }
@@ -226,8 +256,8 @@ namespace TabBlazor
 
         public async Task SetPage(int pageNumber)
         {
-                PageNumber = pageNumber;
-                await Update();
+            PageNumber = pageNumber;
+            await Update();
         }
 
         public async Task FirstPage()
@@ -268,39 +298,6 @@ namespace TabBlazor
             await InvokeAsync(StateHasChanged);
         }
 
-        //private List<MenuDropdownItem<Item>> GetRowActions()
-        //{
-        //    var result = new List<MenuDropdownItem<Item>>();
-        //    result = result.Concat(RowActions).ToList();
-        //    if (AllowEdit)
-        //    {
-        //        result.Add(new MenuDropdownItem<Item>
-        //        {
-        //            CallBack = EventCallback.Factory.Create<Item>(this, OnEditItem),
-        //            Icon = "fe fe-edit-3",
-        //            Title = L.GetString(x => x.FastEdit)
-        //        });
-        //    }
-
-        //    if (AllowDelete)
-        //    {
-        //        result.Add(new MenuDropdownItem<Item>
-        //        {
-        //            CallBack = EventCallback.Factory.Create<Item>(this, OnDeleteItem),
-        //            Icon = "fe fe-trash-2",
-        //            Title = L.GetString(x => x.Delete),
-        //            Id = "DeleteItem"
-        //        });
-        //    }
-
-        //    return result;
-        //}
-
-        //public List<MenuDropdownItem<object>> GetHeaderActions()
-        //{
-        //    return HeaderActions;
-        //}
-
         protected async Task OnAddItem()
         {
             if (IsAddInProgress)
@@ -309,8 +306,16 @@ namespace TabBlazor
             }
 
             IsAddInProgress = true;
+            Item tableItem;
+            if (AddItemFactory != null)
+            {
+                tableItem = AddItemFactory();
+            }
+            else
+            {
+                tableItem = (Item)Activator.CreateInstance(typeof(Item));
+            }
 
-            Item tableItem = (Item)Activator.CreateInstance(typeof(Item));
             Items.Add(tableItem);
 
             await LastPage();
